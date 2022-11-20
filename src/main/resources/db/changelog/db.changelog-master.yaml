@@ -109,6 +109,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: payment_id
+                  autoIncrement: true
                   type: BIGINT
                   constraints:
                     primaryKey: true

@@ -1,5 +1,6 @@
 package com.example.store.model
 
+import java.math.BigDecimal
 import java.util.*
 
 class Film (
@@ -9,7 +10,7 @@ class Film (
     var releaseYear: Date?,
     var language: String?,
     var rentalDuration: Int,
-    var rentalRate: Double?,
+    var rentalRate: BigDecimal?,
     var actors: List<String>?,
     var categories: List<String>?
 )
