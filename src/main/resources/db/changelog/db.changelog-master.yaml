@@ -1,0 +1,153 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: simo
+      changes:
+        - createTable:
+            tableName: store
+            columns:
+              - column:
+                  name: store_id
+                  autoIncrement: true
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: manager_staff_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: address_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_update
+                  type: timestamp
+
+  - changeSet:
+      id: 2
+      author: simo
+      changes:
+        - createTable:
+            tableName: inventory
+            columns:
+              - column:
+                  name: inventory_id
+                  autoIncrement: true
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: film_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: store_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_store
+                    references: store(store_id)
+              - column:
+                  name: last_update
+                  type: timestamp
+
+  - changeSet:
+      id: 3
+      author: simo
+      changes:
+        - createTable:
+            tableName: rental
+            columns:
+              - column:
+                  name: rental_id
+                  autoIncrement: true
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: rental_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: inventory_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_inventory
+                    references: inventory(inventory_id)
+              - column:
+                  name: customer_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: return_date
+                  type: datetime
+              - column:
+                  name: employee_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_update
+                  type: timestamp
+
+  - changeSet:
+      id: 4
+      author: simo
+      changes:
+        - createTable:
+            tableName: payment
+            columns:
+              - column:
+                  name: payment_id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: customer_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: employee_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: rental_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_rental
+                    references: rental(rental_id)
+              - column:
+                  name: amount
+                  type: decimal(5,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: payment_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_update
+                  type: timestamp
+
+  - changeSet:
+      id: 5
+      author: simo
+      changes:
+        - sqlFile:
+            dbms: 'mysql'
+            path: db/sql/data.sql
