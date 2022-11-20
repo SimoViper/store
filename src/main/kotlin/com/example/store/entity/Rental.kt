@@ -1,10 +1,7 @@
 package com.example.store.entity
 
 import java.util.*
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
+import javax.persistence.*
 
 @Entity
 class Rental(
@@ -12,19 +9,23 @@ class Rental(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var rentalId: Long?,
     var rentalDate: Date,
-    var inventoryId: Long?,
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "inventory_id")
+    var inventory: Inventory?,
     var customerId: Long,
     var returnDate: Date,
     var employeeId: Long,
-    var lastUpdate: Date
+    var lastUpdate: Date,
+    @OneToOne(mappedBy = "rental")
+    var payment: Payment?
 ) {
     constructor(
         rentalDate: Date,
-        inventoryId: Long?,
+        inventory: Inventory?,
         customerId: Long,
         returnDate: Date,
         employeeId: Long,
         lastUpdate: Date
     ) :
-            this(rentalId = null, rentalDate, inventoryId, customerId, returnDate, employeeId, lastUpdate)
+            this(rentalId = null, rentalDate, inventory, customerId, returnDate, employeeId, lastUpdate, null)
 }

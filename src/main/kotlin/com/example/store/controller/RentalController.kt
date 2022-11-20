@@ -39,4 +39,12 @@ class RentalController(
         return paymentService.createPayment(paymentRequest)
     }
 
+    @GetMapping("/rent/customer/{customer_id}")
+    fun getRentals(
+        @PathVariable(name = "customer_id") customerId: Long
+    ): RentalResponse {
+
+        return RentalResponse(rentalService.getRentalsByCustomer(customerId))
+    }
+
 }

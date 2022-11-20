@@ -21,8 +21,8 @@ class RentalService @Autowired constructor(
         val rentals = mutableListOf<RentalDTO>()
         rentalRequest.films.forEach { film ->
             run {
-                val inventoryId: Long? = saveInventory(film, rentalRequest)
-                val rental = saveRental(inventoryId, rentalRequest, film.rentalDuration)
+                val inventory: Inventory = saveInventory(film, rentalRequest)
+                val rental = saveRental(inventory, rentalRequest, film.rentalDuration)
 
                 rentals.add(RentalDTO(rentalId = rental.rentalId, rental.returnDate))
             }
@@ -30,15 +30,33 @@ class RentalService @Autowired constructor(
         return rentals
     }
 
+    fun getRentalsByCustomer(customerId: Long): List<RentalDTO> {
+        val rentals: List<Rental> = rentalRepository.findByCustomerId(customerId)
+        val rentalDTOs = mutableListOf<RentalDTO>()
+        rentals.stream().forEach { rental ->
+            rentalDTOs.add(
+                RentalDTO(
+                    rentalId = rental.rentalId,
+                    rentalDate = rental.rentalDate,
+                    returnDate = rental.returnDate,
+                    storeId = rental.inventory?.storeId,
+                    filmId = rental.inventory?.filmId,
+                    employeeId = rental.employeeId
+                )
+            )
+        }
+        return rentalDTOs
+    }
+
     private fun saveRental(
-        inventoryId: Long?,
+        inventory: Inventory?,
         rentalRequest: RentalRequest,
         rentalDuration: Int
     ): Rental {
         val rental = rentalRepository.save(
             Rental(
                 Date(),
-                inventoryId,
+                inventory,
                 rentalRequest.customerId,
                 getReturnDate(rentalDuration),
                 rentalRequest.employeeId,
@@ -51,15 +69,14 @@ class RentalService @Autowired constructor(
     private fun saveInventory(
         film: Film,
         rentalRequest: RentalRequest
-    ): Long? {
-        val inventory = inventoryRepository.save(
+    ): Inventory {
+        return inventoryRepository.save(
             Inventory(
                 filmId = film.filmId,
                 storeId = rentalRequest.storeId,
                 lastUpdate = Date()
             )
         )
-        return inventory.inventoryId
     }
 
     private fun getReturnDate(rentalDuration: Int): Date {
